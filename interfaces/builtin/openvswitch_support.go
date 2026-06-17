@@ -29,6 +29,14 @@ const openvswitchSupportBaseDeclarationSlots = `
     deny-auto-connection: true
 `
 
+// IOMMU is required when DPDK is used (thus also with DOCA)
+// doca_mlx5_hws* is used by when doca OVS enables DOCA acceleration
+const openvswitchSupportConnectedPlugAppArmor = `
+/sys/kernel/iommu_groups/{,**} r,
+/var/tmp/doca_mlx5_hws* rw,
+/var/tmp/dpdk_net_mlx5_* rw,
+`
+
 var openvswitchSupportConnectedPlugKmod = []string{`openvswitch`}
 
 func init() {
@@ -39,5 +47,6 @@ func init() {
 		implicitOnClassic:        true,
 		baseDeclarationSlots:     openvswitchSupportBaseDeclarationSlots,
 		connectedPlugKModModules: openvswitchSupportConnectedPlugKmod,
+		connectedPlugAppArmor:    openvswitchSupportConnectedPlugAppArmor,
 	})
 }
